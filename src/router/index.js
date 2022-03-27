@@ -2,21 +2,40 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 
+// 在当前页面点击该页面的路由时会有报错(官方bug)，在vuerouter注册之前写入以下代码
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function (location) {
+  return originalPush.call(this, location).catch((err) => {})
+}
+
 Vue.use(VueRouter)
 
 const routes = [
+  // 重定向
   {
-    path: '/',
+    path: '/', // 用户进我的根目录
+    redirect: '/home' // 我给他重定向到home
+  },
+  {
+    path: '/home',
     name: 'Home',
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/goods',
+    component: () => import('@/views/Goods.vue')
+  },
+  {
+    path: '/user',
+    component: () => import('@/views/User.vue')
+  },
+  {
+    path: '/order',
+    component: () => import('@/views/Order.vue')
+  },
+  {
+    path: '/welfare',
+    component: () => import('@/views/Welfare.vue')
   }
 ]
 
