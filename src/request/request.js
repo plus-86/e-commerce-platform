@@ -7,7 +7,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    console.log('请求拦截器', config)
     return config
   },
   (err) => {
@@ -17,9 +16,17 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (res) => {
-    console.log('响应拦截器', res)
-    return res
+    let res_data = res.data
+    // code为0时，业务逻辑为成功，把这个弹窗工具抽取出来
+    if (res_data.code != 0) {
+      // 不为0弹窗，return一个false给用到的页面做统一处理
+      alert(res_data.message)
+      return false
+    }
+    return res_data
   },
+  // 请求失败走这里
+  // 这个抛出的错误就相当于组件中发送请求后的catch方法
   (err) => {
     return new Promise.reject(err)
   }
