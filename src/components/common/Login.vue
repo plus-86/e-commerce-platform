@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 import { sendSMSCode, submitLogin } from '@/request/api'
 import { verifyPhoneNumber } from '@/utils/index'
 export default {
@@ -94,6 +94,7 @@ export default {
       'changeLoginModuleState',
       'changeLoginState'
     ]),
+    ...mapActions('ToastState', ['asyncChangeToastState']),
     // 拼图成功
     onSuccess(time) {
       let ms = (time / 1000).toFixed(1)
@@ -111,12 +112,18 @@ export default {
     varify() {
       // 手机号验证,封到utils里了
       if (!verifyPhoneNumber(this.phoneNumber)) {
-        alert('请输入正确的手机号')
+        this.asyncChangeToastState({
+          msg: '请输入正确的手机号',
+          classType: 'warning'
+        })
         return false
       }
       // 拼图验证
       if (this.msg === '再试一次' || this.msg === '向右滑动') {
-        alert('请完成拼图验证')
+        this.asyncChangeToastState({
+          msg: '请完成拼图验证',
+          classType: 'warning'
+        })
         return false
       }
       return true
@@ -156,7 +163,10 @@ export default {
 
       // 判断用户输入的验证码是否为空
       if (!this.SMSCode.trim()) {
-        alert('请输入验证码')
+        this.asyncChangeToastState({
+          msg: '请输入验证码',
+          classType: 'warning'
+        })
         return
       }
 
@@ -172,7 +182,10 @@ export default {
       // 登录成功后
 
       // 提示登录成功
-      alert('登录成功')
+      this.asyncChangeToastState({
+        msg: '登录成功',
+        classType: 'success'
+      })
       // 关闭登录窗口
       this.changeLoginModuleState(false)
       // 保存token

@@ -37,13 +37,12 @@ export default {
   },
   methods: {
     ...mapMutations('LoginModule', ['changeLoginModuleState']),
-    ...mapMutations('ToastState', ['changeToastState']),
     ...mapActions('ToastState', ['asyncChangeToastState']),
 
     hdclick() {
-      this.changeToastState({
+      this.asyncChangeToastState({
         msg: '请先登录',
-        classType: 'icon-chucuo'
+        classType: 'success'
       })
     }
   }

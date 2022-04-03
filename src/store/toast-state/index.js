@@ -23,14 +23,24 @@ export default {
       state.commit('changeToastState', {
         showToast: true, // 开关必执行，不用通过传参
         msg: payload.msg, // 弹窗文字
-        classType: payload.classType // icon和颜色
+        classType:
+          payload.classType === 'error'
+            ? 'icon-chucuo'
+            : payload.classType === 'warning'
+            ? 'icon-jingshi'
+            : 'icon-zhengque' // icon和颜色
       })
 
       setTimeout(() => {
         state.commit('changeToastState', {
           showToast: false, // 开关必执行，不用通过传参
           msg: payload.msg,
-          classType: payload.classType
+          classType:
+            payload.classType === 'error'
+              ? 'icon-chucuo'
+              : payload.classType === 'warning'
+              ? 'icon-jingshi'
+              : 'icon-zhengque'
         })
       }, 1500)
     }

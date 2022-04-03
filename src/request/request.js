@@ -1,4 +1,6 @@
 import axios from 'axios'
+// 引入vuex
+import store from '@/store/index.js'
 
 const instance = axios.create({
   baseURL: 'http://kumanxuan1.f3322.net:8881/cms/',
@@ -20,7 +22,11 @@ instance.interceptors.response.use(
     // code为0时，业务逻辑为成功，把这个弹窗工具抽取出来
     if (res_data.code != 0) {
       // 不为0弹窗，return一个false给用到的页面做统一处理
-      alert(res_data.message)
+      // 这里用自定义组件替换toast
+      store.dispatch('ToastState/asyncChangeToastState', {
+        msg: res_data.message,
+        classType: 'icon-chucuo'
+      })
       return false
     }
     return res_data
