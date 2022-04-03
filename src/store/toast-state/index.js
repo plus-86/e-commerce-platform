@@ -17,15 +17,18 @@ export default {
   },
   actions: {
     asyncChangeToastState(state, payload) {
+      // Action 提交的是 mutation，而不是直接变更状态，走一波异步
+      // 这里调mutations里的changeToastState，更改state
+      // 外面参数传进来，再传给changeToastState
       state.commit('changeToastState', {
-        showToast: true,
-        msg: payload.msg,
-        classType: payload.classType
+        showToast: true, // 开关必执行，不用通过传参
+        msg: payload.msg, // 弹窗文字
+        classType: payload.classType // icon和颜色
       })
 
       setTimeout(() => {
         state.commit('changeToastState', {
-          showToast: false,
+          showToast: false, // 开关必执行，不用通过传参
           msg: payload.msg,
           classType: payload.classType
         })

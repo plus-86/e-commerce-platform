@@ -41,24 +41,10 @@ export default {
     ...mapActions('ToastState', ['asyncChangeToastState']),
 
     hdclick() {
-      this.asyncChangeToastState({
+      this.changeToastState({
         msg: '请先登录',
         classType: 'icon-chucuo'
       })
-
-      // this.changeToastState({
-      //   showToast: true,
-      //   msg: '请先登录',
-      //   classType: 'icon-chucuo'
-      // })
-
-      // setTimeout(() => {
-      //   this.changeToastState({
-      //     state: false,
-      //     msg: '请先登录',
-      //     classType: 'icon-chucuo'
-      //   })
-      // }, 1500)
     }
   }
 }
