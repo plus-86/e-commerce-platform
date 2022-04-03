@@ -4,15 +4,23 @@
       <div class="left">欢迎来到叩丁狼积分商城</div>
       <div class="right">
         <ul>
-          <li><i class="icon iconfont icon-youke"></i> 用户名：游客</li>
+          <li @click="hdclick">
+            <i class="icon iconfont icon-youke"></i> 用户名：游客
+          </li>
           <li>我的积分：--</li>
           <li>获取积分</li>
           <li>叩丁狼官网</li>
-          <li class="btn" @click="changeLoginModuleState(true)">登录</li>
-          <li class="btn cart" @click="">
+          <li
+            class="btn"
+            @click="changeLoginModuleState(true)"
+            v-show="!hasLogin"
+          >
+            登录
+          </li>
+          <li class="btn cart" v-show="hasLogin">
             <i class="icon iconfont icon-gouwuche"></i>
-            <span>购物车</span>
-            <n>0</n>
+            <span class="cart-text">购物车</span>
+            <span class="number">0</span>
           </li>
         </ul>
       </div>
@@ -21,11 +29,37 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 export default {
   name: 'TopBar',
+  computed: {
+    ...mapState('LoginModule', ['hasLogin'])
+  },
   methods: {
-    ...mapMutations('LoginModule', ['changeLoginModuleState'])
+    ...mapMutations('LoginModule', ['changeLoginModuleState']),
+    ...mapMutations('ToastState', ['changeToastState']),
+    ...mapActions('ToastState', ['asyncChangeToastState']),
+
+    hdclick() {
+      this.asyncChangeToastState({
+        msg: '请先登录',
+        classType: 'icon-chucuo'
+      })
+
+      // this.changeToastState({
+      //   showToast: true,
+      //   msg: '请先登录',
+      //   classType: 'icon-chucuo'
+      // })
+
+      // setTimeout(() => {
+      //   this.changeToastState({
+      //     state: false,
+      //     msg: '请先登录',
+      //     classType: 'icon-chucuo'
+      //   })
+      // }, 1500)
+    }
   }
 }
 </script>
@@ -69,10 +103,10 @@ export default {
               margin-right: 0;
               font-size: 20px;
             }
-            span {
+            .cart-text {
               margin: 0 8px 0 8px;
             }
-            n {
+            .number {
               width: 22px;
               height: 22px;
               line-height: 22px;

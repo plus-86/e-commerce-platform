@@ -90,7 +90,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations('LoginModule', ['changeLoginModuleState']),
+    ...mapMutations('LoginModule', [
+      'changeLoginModuleState',
+      'changeLoginState'
+    ]),
     // 拼图成功
     onSuccess(time) {
       let ms = (time / 1000).toFixed(1)
@@ -175,6 +178,7 @@ export default {
       // 保存token
       localStorage.setItem('x-auth-token', loginResponse['x-auth-token'])
       // 切换登录状态
+      this.changeLoginState(true)
     }
   }
 }
