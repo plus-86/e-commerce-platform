@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TopBar :key="TopBarValue"></TopBar>
+    <TopBar></TopBar>
     <Header></Header>
     <router-view />
     <Footer></Footer>
@@ -19,18 +19,6 @@ import Toast from '@/components/common/Toast'
 import { mapState } from 'vuex'
 export default {
   name: 'app',
-  data() {
-    return {
-      TopBarValue: 1
-    }
-  },
-  watch: {
-    '$route.path': {
-      handler() {
-        this.TopBarValue++
-      }
-    }
-  },
   computed: {
     ...mapState('LoginModule', ['whetherToShowLoginModule']), // mapState去找根文件下的LoginModule，然后再找LoginModule里的whetherToShowLoginModule
     ...mapState('ToastState', ['showToast'])

@@ -4,10 +4,12 @@
       <div class="left">欢迎来到叩丁狼积分商城</div>
       <div class="right">
         <ul>
-          <li @click="hdclick">
-            <i class="icon iconfont icon-youke"></i> 用户名：游客
+          <li class="user-info" @click="hasLogin === false ? hdclick() : ''">
+            <i :class="userInfo.headImg" v-show="!hasLogin"></i>
+            <img :src="userInfo.headImg" alt="" v-show="hasLogin" />
+            用户名：{{ userInfo.nickName }}
           </li>
-          <li>我的积分：--</li>
+          <li>我的积分：{{ userInfo.coin }}</li>
           <li>获取积分</li>
           <li>叩丁狼官网</li>
           <li
@@ -20,7 +22,7 @@
           <li class="btn cart" v-show="hasLogin">
             <i class="icon iconfont icon-gouwuche"></i>
             <span class="cart-text">购物车</span>
-            <span class="number">0</span>
+            <span class="number">{{ cartTotal }}</span>
           </li>
         </ul>
       </div>
@@ -34,7 +36,8 @@ import { wechatLogin } from '@/request/api.js'
 export default {
   name: 'TopBar',
   computed: {
-    ...mapState('LoginModule', ['hasLogin'])
+    ...mapState('LoginModule', ['hasLogin']),
+    ...mapState('UserInfo', ['cartTotal', 'userInfo'])
   },
   created() {
     // 以防请求在code获取到之前发生，使用nextTick()
@@ -43,9 +46,10 @@ export default {
     // this.$nextTick().then(async () => {
 
     // })
+
     setTimeout(async () => {
       let loginCode = this.$route.query.code
-      // 有code发起请求
+      // 地址栏有code, 则发起请求
       if (loginCode) {
         let wechatLoginResponse = await wechatLogin({ code: loginCode })
 
@@ -69,8 +73,10 @@ export default {
           this.changeLoginState(true)
 
           // 清除地址栏上的code
-          // 刷新当前页面
+          // 为了清除地址栏上的code, 刷新当前页面( 路由 ),
           this.$router.push(this.$route.path)
+          // 登录成功，发送获取用户信息的请求
+          this.asyncChangeUserInfo()
         } else if (wechatLoginResponse.code === 400) {
           // code失效
           // 1 提示用户重新扫二维码
@@ -111,12 +117,36 @@ export default {
           // 4.Login登录按钮判断本地uuid，然后调用手机绑定微信号的接口
         }
       } else {
-        //  此情况为 1用户没扫码 2用户已经登录
+        //  此情况为地址栏上没有code:没有code的情况 1用户没扫码 2用户已经登录（刷新页面）
         let mytoken = localStorage.getItem('x-auth-token')
         // 这里不用写if-else，token有或者没有直接拿来做布尔值的判断，交给changeLoginState就行
         this.changeLoginState(Boolean(mytoken))
+        if (mytoken) {
+          // 有token，则是登录状态，刷新页面的时候实时更新用户信息
+          this.asyncChangeUserInfo()
+        } else {
+          // 没token，不是登录状态，初始化用户信息
+          this.initUserInfo()
+        }
       }
     }, 100)
+  },
+  watch: {
+    '$route.path': {
+      handler(newVal, oldVal) {
+        // 切换路由的时，监听登录情况
+        let mytoken = localStorage.getItem('x-auth-token')
+        // 这里不用写if-else，token有或者没有直接拿来做布尔值的判断，交给changeLoginState就行
+        this.changeLoginState(Boolean(mytoken))
+        if (mytoken) {
+          // 有token，则是登录状态，切换路由的时候实时更新用户信息
+          this.asyncChangeUserInfo()
+        } else {
+          // 没token，不是登录状态，初始化用户信息
+          this.initUserInfo()
+        }
+      }
+    }
   },
   methods: {
     ...mapMutations('LoginModule', [
@@ -124,8 +154,9 @@ export default {
       'switchLoginMode',
       'changeLoginState'
     ]),
+    ...mapMutations('UserInfo', ['initUserInfo']),
     ...mapActions('ToastState', ['asyncChangeToastState']),
-
+    ...mapActions('UserInfo', ['asyncChangeUserInfo']),
     hdclick() {
       this.asyncChangeToastState({
         msg: '请先登录',
@@ -160,6 +191,16 @@ export default {
           .iconfont {
             font-size: 14px;
             margin-right: 10px;
+          }
+          img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+          }
+          &.user-info {
+            display: flex;
+            align-items: center;
           }
           &.btn {
             /* 因为这个btn是li同一层级的，所以这里的意思是 li元素且有login-btn类名, 才能选中它 */

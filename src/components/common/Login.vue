@@ -68,7 +68,12 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
-import { sendSMSCode, submitLogin, wechatBindingLogin } from '@/request/api'
+import {
+  sendSMSCode,
+  submitLogin,
+  wechatBindingLogin,
+  getUserInfo
+} from '@/request/api'
 import { verifyPhoneNumber } from '@/utils/index'
 export default {
   name: 'Login',
@@ -99,6 +104,7 @@ export default {
       'switchLoginMode'
     ]),
     ...mapActions('ToastState', ['asyncChangeToastState']),
+    ...mapActions('UserInfo', ['asyncChangeUserInfo']),
     // 拼图成功
     onSuccess(time) {
       let ms = (time / 1000).toFixed(1)
@@ -220,6 +226,9 @@ export default {
         // 刷新当前页面
         this.$router.push(this.$route.path)
       }
+
+      // 登录成功，发送获取用户信息的请求
+      this.asyncChangeUserInfo()
     },
     weixinClick() {
       // 切换到微信登录和盒子

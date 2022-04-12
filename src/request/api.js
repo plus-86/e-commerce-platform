@@ -1,7 +1,7 @@
 import instance from './request'
 import qs from 'qs' // cnpm i qs
 // 获取精品推荐
-export const productRecommend = () => instance.get('products/recommend')
+export const productRecommend = () => instance.get('/products/recommend')
 
 // 获取验证码
 export const sendSMSCode = (param) =>
@@ -18,3 +18,6 @@ export const wechatLogin = (param) =>
 // 手机绑定微信登录
 export const wechatBindingLogin = (param) =>
   instance.post('/wechatUsers/binding', qs.stringify(param))
+
+// 获取登录用户信息
+export const getUserInfo = () => instance.get('/shop/userProfiles')
