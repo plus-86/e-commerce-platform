@@ -4,7 +4,9 @@ export default {
     // 是否显示登录模块
     whetherToShowLoginModule: false,
     // 用token判断是否已登录
-    hasLogin: localStorage.getItem('x-auth-token') ? true : false
+    hasLogin: localStorage.getItem('x-auth-token') ? true : false,
+    // 显示手机登录或扫码登录
+    loginWithPhoneNumber: true
   },
   mutations: {
     // 每个 mutation 都有一个  字符串的事件类型 (type)和一个回调函数 (handler)，如下面的 字符串的事件类型 'changeLoginModuleState'
@@ -16,6 +18,10 @@ export default {
     // 切换登录状态
     changeLoginState(state, loginState) {
       state.hasLogin = loginState
+    },
+    // 切换手机\扫码登录
+    switchLoginMode(state, mode) {
+      state.loginWithPhoneNumber = mode
     }
   },
   actions: {}

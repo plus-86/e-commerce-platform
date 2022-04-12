@@ -9,8 +9,8 @@ import axios from 'axios'
 export default {
   name: 'Home',
   async created() {
-    // let res = await productRecommend()
-    // console.log(res)
+    let res = await productRecommend()
+    console.log(res)
   },
   components: {}
 }

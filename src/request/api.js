@@ -10,3 +10,11 @@ export const sendSMSCode = (param) =>
 // 登录
 export const submitLogin = (param) =>
   instance.post('/phoneRegin', qs.stringify(param))
+
+// 微信扫码登录
+export const wechatLogin = (param) =>
+  instance.post('/wechatUsers/PCLogin', qs.stringify(param))
+
+// 手机绑定微信登录
+export const wechatBindingLogin = (param) =>
+  instance.post('/wechatUsers/binding', qs.stringify(param))

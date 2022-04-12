@@ -7,20 +7,23 @@
         @click="changeLoginModuleState(false)"
       ></i>
       <ul>
-        <li :class="showForm === true ? 'active' : ''" @click="showForm = true">
+        <li
+          :class="loginWithPhoneNumber === true ? 'active' : ''"
+          @click="switchLoginMode(true)"
+        >
           手机号码登录
         </li>
         <li style="margin: 1px 10px 0 10px; cursor: default">|</li>
         <li
-          :class="showForm === false ? 'active' : ''"
-          @click="showForm = false"
+          :class="loginWithPhoneNumber === false ? 'active' : ''"
+          @click="weixinClick"
         >
           微信扫码登录
         </li>
       </ul>
 
       <div class="info">
-        <div class="form" v-show="showForm">
+        <div class="form" v-show="loginWithPhoneNumber">
           <div class="input-group" style="margin-bottom: 5px">
             <input
               type="text"
@@ -57,22 +60,20 @@
           </div>
           <div class="btn" @click="toLogin">登录</div>
         </div>
-        <div class="qrcode" v-show="!showForm">二维码</div>
+        <div id="weixin" class="qrcode" v-show="!loginWithPhoneNumber"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapActions } from 'vuex'
-import { sendSMSCode, submitLogin } from '@/request/api'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { sendSMSCode, submitLogin, wechatBindingLogin } from '@/request/api'
 import { verifyPhoneNumber } from '@/utils/index'
 export default {
   name: 'Login',
   data() {
     return {
-      // 是否显示登录模态窗口
-      showForm: true,
       // 滑块提示文字
       msg: '向右滑动',
       // 用户输入的手机号
@@ -88,11 +89,14 @@ export default {
       timer: null
     }
   },
-
+  computed: {
+    ...mapState('LoginModule', ['loginWithPhoneNumber'])
+  },
   methods: {
     ...mapMutations('LoginModule', [
       'changeLoginModuleState',
-      'changeLoginState'
+      'changeLoginState',
+      'switchLoginMode'
     ]),
     ...mapActions('ToastState', ['asyncChangeToastState']),
     // 拼图成功
@@ -160,7 +164,6 @@ export default {
       if (!this.varify()) return
 
       // 验证码验证
-
       // 判断用户输入的验证码是否为空
       if (!this.SMSCode.trim()) {
         this.asyncChangeToastState({
@@ -171,27 +174,72 @@ export default {
       }
 
       // 登录
+      let uuid = localStorage.getItem('uuid')
+      let loginResponse = null
       // 发送验证码和手机号到后端进行验证，后端返回结果，判断是否可以登录
-      let loginResponse = await submitLogin({
-        verifyCode: this.SMSCode,
-        phone: this.phoneNumber
-      })
-      // 如果业务逻辑失败，则return
+
+      // 判断是普通登录还是绑定登录
+      if (uuid) {
+        // 调用绑定登录的接口
+        loginResponse = await wechatBindingLogin({
+          verifyCode: this.SMSCode.trim(),
+          phone: this.phoneNumber.trim(),
+          uuid
+        })
+      } else {
+        // 调用普通登录的接口
+        loginResponse = await submitLogin({
+          verifyCode: this.SMSCode.trim(),
+          phone: this.phoneNumber.trim()
+        })
+      }
+
+      // 如果业务逻辑失败（登录失败），则return
       if (!loginResponse) return
 
       // 登录成功后
-
       // 提示登录成功
       this.asyncChangeToastState({
         msg: '登录成功',
         classType: 'success'
       })
+
       // 关闭登录窗口
       this.changeLoginModuleState(false)
+
       // 保存token
       localStorage.setItem('x-auth-token', loginResponse['x-auth-token'])
+
       // 切换登录状态
       this.changeLoginState(true)
+
+      // 清除uuid和地址栏上的code
+      if (uuid) {
+        // 清除本地uuid
+        localStorage.removeItem('uuid')
+        // 刷新当前页面
+        this.$router.push(this.$route.path)
+      }
+    },
+    weixinClick() {
+      // 切换到微信登录和盒子
+      this.switchLoginMode(false)
+
+      // 申请二维码
+      let _this = this
+      new WxLogin({
+        id: 'weixin',
+        appid: 'wx67cfaf9e3ad31a0d', // 这个appid是人家给的，写死
+        scope: 'snsapi_login',
+        // 扫码成功后重定向的接口
+        redirect_uri: 'https://sc.wolfcode.cn/cms/wechatUsers/shop/PC',
+        // state填写编码后的url
+        state: encodeURIComponent(
+          window.btoa('http://127.0.0.1:8080' + _this.$route.path)
+        ),
+        // 调用样式文件
+        href: 'data:text/css;base64,DQouaW1wb3dlckJveCAudGl0bGUsIC5pbXBvd2VyQm94IC5pbmZvew0KICAgIGRpc3BsYXk6IG5vbmU7DQp9DQouaW1wb3dlckJveCAucXJjb2Rlew0KICAgIG1hcmdpbi10b3A6IDA7DQp9DQo='
+      })
     }
   }
 }
