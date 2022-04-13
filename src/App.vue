@@ -39,6 +39,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  list-style: none;
+  cursor: default;
 }
 .fade-enter {
   opacity: 0; /** 插入的新元素最开始是透明的 **/
