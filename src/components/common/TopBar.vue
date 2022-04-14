@@ -1,7 +1,7 @@
 <template>
   <div class="TopBar">
     <div class="center">
-      <div class="left">欢迎来到叩丁狼积分商城</div>
+      <div class="left">欢迎来到皇家大麦茶积分商城</div>
       <div class="right">
         <ul>
           <li class="user-info" @click="hasLogin === false ? hdclick() : ''">

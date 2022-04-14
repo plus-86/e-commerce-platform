@@ -1,10 +1,19 @@
 <template>
   <div class="title">
     <div class="left">
-      <img src="@/assets/icon/like.svg" alt="" />
-      <h2>精品推荐</h2>
+      <img
+        v-show="title === '精品推荐' ? true : false"
+        src="@/assets/icon/like.svg"
+        alt=""
+      />
+      <img
+        v-show="title === '积分攻略' ? true : false"
+        src="@/assets/icon/point.svg"
+        alt=""
+      />
+      <h2>{{ title }}</h2>
     </div>
-    <div class="more">
+    <div v-show="title === '积分攻略' ? false : true" class="more">
       <span>更多</span>
       <i class="icon iconfont icon-anniu-jiantouxiangyou"></i>
     </div>
@@ -12,7 +21,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['title']
+}
 </script>
 
 <style scoped lang="less">

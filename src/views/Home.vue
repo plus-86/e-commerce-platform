@@ -9,18 +9,22 @@
     </div>
     <div class="product">
       <div class="center">
-        <Title></Title>
+        <Title :title="boutiqueTitle"></Title>
         <div class="boutique-list">
-          <Product></Product>
+          <Product :list="boutiqueList" :maxLength="maxLength"></Product>
         </div>
-        <Title></Title>
+        <Title :title="hotTitle"></Title>
         <div class="hot-list">
-          <Product></Product>
+          <div class="hot-image">
+            <img src="@/assets/img/hot-image.png" alt="" />
+          </div>
+          <Product :list="hotList" :maxLength="maxLength"></Product>
         </div>
       </div>
       <div class="strategy">
         <div class="center">
-          <Title></Title>
+          <Title title="积分攻略"></Title>
+          <Strategy></Strategy>
         </div>
       </div>
     </div>
@@ -28,20 +32,35 @@
 </template>
 
 <script>
-import { productRecommend } from '@/request/api.js'
+import { productRecommend, productHot } from '@/request/api.js'
 import instance from '@/request/request.js'
 import axios from 'axios'
 import Title from '@/components/common/Title'
 import Product from '@/components/common/Product'
+import Strategy from '@/components/common/Strategy'
 export default {
   name: 'Home',
+  data() {
+    return {
+      boutiqueTitle: '',
+      boutiqueList: [],
+      hotTitle: '',
+      hotList: [],
+      maxLength: 8
+    }
+  },
   async created() {
-    // let res = await productRecommend()
-    // console.log(res)
+    let boutiqueRes = await productRecommend()
+    this.boutiqueTitle = boutiqueRes.data.name
+    this.boutiqueList = boutiqueRes.data.data.records
+    let hotRes = await productHot()
+    this.hotTitle = hotRes.data.name
+    this.hotList = hotRes.data.data.records
   },
   components: {
     Title,
-    Product
+    Product,
+    Strategy
   }
 }
 </script>
@@ -70,6 +89,16 @@ export default {
   }
   .product {
     background: #f5f5f5;
+    .center {
+      .hot-list {
+        .hot-image {
+          margin-bottom: 30px;
+          img {
+            display: block;
+          }
+        }
+      }
+    }
   }
   .strategy {
     background: #fff;
