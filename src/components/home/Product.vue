@@ -6,6 +6,7 @@
         v-for="(item, index) in list"
         :key="item.id"
         v-show="index < maxLength"
+        @click="toDetail(item.id)"
       >
         <div class="movable-box">
           <img :src="'http://sc.wolfcode.cn/' + item.coverImg" alt="" />
@@ -39,7 +40,12 @@
 
 <script>
 export default {
-  props: ['list', 'maxLength']
+  props: ['list', 'maxLength'],
+  methods: {
+    toDetail(id) {
+      this.$router.push(`/detail?id=${id}`)
+    }
+  }
 }
 </script>
 

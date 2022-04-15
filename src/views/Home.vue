@@ -35,9 +35,9 @@
 import { productRecommend, productHot } from '@/request/api.js'
 import instance from '@/request/request.js'
 import axios from 'axios'
-import Title from '@/components/common/Title'
-import Product from '@/components/common/Product'
-import Strategy from '@/components/common/Strategy'
+import Title from '@/components/home/Title'
+import Product from '@/components/home/Product'
+import Strategy from '@/components/home/Strategy'
 export default {
   name: 'Home',
   data() {

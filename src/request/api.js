@@ -6,6 +6,9 @@ export const productRecommend = () => instance.get('/products/recommend')
 //热门兑换
 export const productHot = () => instance.get('/products/hot')
 
+//商品详情
+export const productDetail = (id) => instance.get(`/products/${id}`)
+
 // 获取验证码
 export const sendSMSCode = (param) =>
   instance.post('/sendSMS', qs.stringify(param)) // 服务端要用qs转化过的数据
