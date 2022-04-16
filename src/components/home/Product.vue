@@ -55,11 +55,6 @@ export default {
   font-size: 18px;
   font-weight: 100;
   ul {
-    // 格式化ul样式
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
     display: flex;
     // 换行
     flex-wrap: wrap;

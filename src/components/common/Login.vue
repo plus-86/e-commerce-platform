@@ -285,15 +285,12 @@ export default {
       cursor: pointer;
     }
     ul {
-      margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       margin-top: 40px;
       padding-bottom: 30px;
       li {
         cursor: pointer;
-        list-style: none;
         color: #ccc;
         font-size: 18px;
       }

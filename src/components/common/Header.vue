@@ -66,13 +66,10 @@ export default {
     }
     .mid {
       ul {
-        padding: 0;
-        margin: 0;
         width: 500px;
         display: flex;
         justify-content: space-between;
         li {
-          list-style: none;
           cursor: pointer;
         }
         // 悬浮和点击的样式

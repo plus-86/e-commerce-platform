@@ -35,6 +35,10 @@
         <input type="text" disabled value="1" />
         <div class="plus">-</div>
       </div>
+      <div class="btns">
+        <div class="add-to-cart">加入购物车</div>
+        <div class="buy-now">立即购买</div>
+      </div>
     </div>
   </div>
 </template>
@@ -91,7 +95,6 @@ export default {
       }
     }
     .optional-img {
-      list-style: none;
       margin: 0;
       padding: 0;
       display: flex;
@@ -99,6 +102,7 @@ export default {
       li {
         width: 100px;
         height: 100px;
+        border: 3px solid transparent;
         cursor: pointer;
         &.imgBorder {
           border: 3px solid @base-color;
@@ -140,9 +144,6 @@ export default {
       margin: 19px 0 14px;
     }
     ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
       display: flex;
       flex-wrap: wrap;
       li {
@@ -179,6 +180,25 @@ export default {
         border-bottom: 1px solid #999;
         border-top: 1px solid #999;
         text-align: center;
+      }
+    }
+    .btns {
+      margin-top: 24px;
+      display: flex;
+      div {
+        width: 150px;
+        height: 46px;
+        color: #fff;
+        text-align: center;
+        line-height: 46px;
+        cursor: pointer;
+        margin-right: 19px;
+        &.add-to-cart {
+          background: #3dc36b;
+        }
+        &.buy-now {
+          background: #fd604d;
+        }
       }
     }
   }

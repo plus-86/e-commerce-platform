@@ -182,11 +182,8 @@ export default {
     .right {
       ul {
         display: flex;
-        margin: 0;
-        padding: 0;
         cursor: pointer;
         li {
-          list-style: none;
           margin-left: 20px;
           .iconfont {
             font-size: 14px;
