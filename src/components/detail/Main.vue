@@ -26,14 +26,14 @@
       <div>
         <h3>颜色/版本</h3>
         <ul>
-          <li>米黄色</li>
+          <li class="active">米黄色</li>
         </ul>
       </div>
       <h3>数量</h3>
-      <div>
-        <div class="plus">-</div>
-        <input type="text" disabled value="1" />
+      <div class="count">
         <div class="reduce">+</div>
+        <input type="text" disabled value="1" />
+        <div class="plus">-</div>
       </div>
     </div>
   </div>
@@ -116,6 +116,7 @@ export default {
   .main-right {
     font-weight: 100;
     text-align: left;
+    flex: 1; // 横向填满整个盒子
     h2 {
       font-weight: inherit;
       font-size: 28px;
@@ -137,6 +138,48 @@ export default {
       font-size: 16px;
       font-weight: inherit;
       margin: 19px 0 14px;
+    }
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      li {
+        height: 32px;
+        border: 1px solid #d1d1d1;
+        color: #666;
+        padding: 0 17px;
+        line-height: 32px;
+        cursor: pointer;
+        margin-right: 20px;
+        margin-bottom: 11px;
+        &.active {
+          color: @base-color;
+          border-color: @base-color;
+        }
+      }
+    }
+    .count {
+      display: flex;
+      text-align: center;
+      .plus,
+      .reduce {
+        width: 28px;
+        height: 28px;
+        line-height: 30px;
+        border: 1px solid #999;
+        color: #999;
+      }
+      input {
+        width: 45px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        border-bottom: 1px solid #999;
+        border-top: 1px solid #999;
+        text-align: center;
+      }
     }
   }
 }
