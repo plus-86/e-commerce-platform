@@ -6,6 +6,7 @@ import '@/assets/css/global-style.less'
 import SlideVerify from 'vue-monoplasty-slide-verify'
 
 Vue.use(SlideVerify)
+Vue.prototype.imgBaseUrl = 'https://sc.wolfcode.cn'
 Vue.config.productionTip = false
 new Vue({
   router,

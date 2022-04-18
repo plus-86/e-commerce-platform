@@ -2,38 +2,47 @@
   <div class="Main">
     <div class="main-left">
       <div class="main-img">
-        <img :src="'https://sc.wolfcode.cn' + coverImg" alt="" />
+        <img :src="imgBaseUrl + coverImg" alt="" />
       </div>
       <ul class="optional-img">
         <li
-          v-for="(item, index) in mainImgArr"
+          v-for="(item, index) in mainData.mainImgArr"
           :key="index"
           @mouseover="changeImg(index)"
-          :class="num === index ? 'imgBorder' : ''"
+          :class="imgTagNum === index ? 'imgBorder' : ''"
         >
+          <!-- imgTagNum初始值是0, 也就是首次加载渲染第一张图片 -->
+          <!-- 内联样式不能用global-style.less文件内的@base-color, 这里写一个类选择器做一个三元表达式的绑定-->
           <img
-            :class="num === index ? '' : 'imgOpacity'"
-            :src="'https://sc.wolfcode.cn/' + item.src"
+            :class="imgTagNum === index ? '' : 'imgOpacity'"
+            :src="imgBaseUrl + item.src"
             alt=""
           />
         </li>
       </ul>
     </div>
     <div class="main-right">
-      <h2>小熊多功能煮蛋器</h2>
-      <p>自动断电丨家用全自动丨早餐神器</p>
-      <section>6000积分</section>
-      <div>
-        <h3>颜色/版本</h3>
+      <h2>{{ mainData.name }}</h2>
+      <p>{{ mainData.seriesSubTitle }}</p>
+      <section>{{ mainData.coin }}积分</section>
+      <div v-for="(item, index) in mainData.parameterJson" :key="index">
+        <h3>{{ item.title }}</h3>
         <ul>
-          <li class="active">米黄色</li>
+          <li
+            v-for="(itm, index) in item.parameters"
+            :key="index"
+            :class="typeTagNum === index ? 'active' : ''"
+            @click="changeType(index, itm.id)"
+          >
+            {{ itm.title }}
+          </li>
         </ul>
       </div>
       <h3>数量</h3>
       <div class="count">
-        <div class="reduce">+</div>
+        <div class="reduce"><i class="icon iconfont icon-add"></i></div>
         <input type="text" disabled value="1" />
-        <div class="plus">-</div>
+        <div class="plus"><i class="icon iconfont icon-minus"></i></div>
       </div>
       <div class="btns">
         <div class="add-to-cart">加入购物车</div>
@@ -44,33 +53,46 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      init: true,
-      coverImg: '',
-      num: 0
+      // 大图片的渲染
+      coverImg: ''
+      // imgNum: 0,
+      // typeNum: 0
     }
   },
-  watch: {
-    mainImgArr: {
-      handler(newVal, oldVal) {
-        if (this.init) {
-          this.init = false
-          this.coverImg = this.mainImgArr[0].src
-        }
-      }
-    }
+  computed: {
+    ...mapState('DetailTagState', ['imgTagNum', 'typeTagNum'])
   },
-  // 需求: 把从父组件传过来的 mainImgArr 的第一个数据的图片作为 初始封面
+  // 功能: 把从父组件传过来的 mainImgArr 的第一个数据的图片作为 初始封面
   // 问题: 直接拿 mainImgArr[0].src 绑定到 第5行 img内 时会报错
   // 原因: mainImgArr是父组件先发请求拿到数据，再流到这个子组件的，如果直接 在第5行 img内 使用 mainImgArr[0].src ，会因为数据还没从父组件流过来而报错(此时mainImgArr为空或者说不存在)
   // 解决: 用watch监听mainImgArr数据是否已经从父组件流过来，若已经有mainImgArr，把初始图片赋值给该页面定义的coverImg，再拿coverImg 在第5行 img内 使用 ，就可以解决问题
-  props: ['mainImgArr'],
+  watch: {
+    mainData: {
+      handler(newVal, oldVal) {
+        // 此侦听器用来监听数据是否已从父组件流向该子组件
+        // 当数据已流向该组件时，获取第一张图片作为大图封面
+        this.coverImg = this.mainData.mainImgArr[0].src
+      }
+    }
+  },
+  props: ['mainData'],
   methods: {
+    ...mapMutations('DetailTagState', ['changeImgTagNum', 'changeTypeTagNum']),
     changeImg(index) {
-      this.coverImg = this.mainImgArr[index].src
-      this.num = index
+      // 改大图
+      this.coverImg = this.mainData.mainImgArr[index].src
+      // 改小图
+      this.changeImgTagNum(index)
+    },
+    changeType(index, id) {
+      // 切换尺码/规格
+      this.changeTypeTagNum(index)
+      // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
+      this.$router.push(`/detail?id=${id}`)
     }
   }
 }
@@ -152,9 +174,11 @@ export default {
         color: #666;
         padding: 0 17px;
         line-height: 32px;
+        font-size: 18px;
         cursor: pointer;
         margin-right: 20px;
         margin-bottom: 11px;
+        &:hover,
         &.active {
           color: @base-color;
           border-color: @base-color;
@@ -168,7 +192,7 @@ export default {
       .reduce {
         width: 28px;
         height: 28px;
-        line-height: 30px;
+        line-height: 28px;
         border: 1px solid #999;
         color: #999;
       }
@@ -185,6 +209,7 @@ export default {
     .btns {
       margin-top: 24px;
       display: flex;
+      font-size: 18px;
       div {
         width: 150px;
         height: 46px;

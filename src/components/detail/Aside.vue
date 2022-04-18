@@ -2,16 +2,16 @@
   <div class="Aside">
     <h3>你还可以兑换</h3>
     <ul>
-      <li v-for="(item, index) in 5" :key="index">
-        <img
-          class="product-img"
-          src="https://sc.wolfcode.cn/upload/images/product_images/20201118/74934997-99c6-4bd3-96c1-9d14774884a3.jpg"
-          alt=""
-        />
+      <li
+        v-for="(item, index) in asideData.thenYouCanBuy"
+        :key="index"
+        @click="toDetail(item.id)"
+      >
+        <img class="product-img" :src="imgBaseUrl + item.img" alt="" />
         <div class="text-info">
-          <div class="title">叩丁狼校园文化衫</div>
+          <div class="title">{{ item.name }}</div>
           <div class="price">
-            9900
+            {{ item.coin }}
             <img src="@/assets/icon/chicken-leg.svg" alt="" />
           </div>
         </div>
@@ -21,7 +21,20 @@
 </template>
 
 <script>
-export default {}
+import { mapMutations } from 'vuex'
+export default {
+  props: ['asideData'],
+  methods: {
+    ...mapMutations('DetailTagState', ['initTag']),
+    toDetail(id) {
+      // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
+      this.$router.push(`/detail?id=${id}`)
+
+      // 获取新的数据后，图片和产品tag复位
+      this.initTag()
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">
@@ -64,15 +77,13 @@ export default {}
         }
         .title {
           font-weight: 100;
-          // 超出的字样用省略号代替
+          // 超出盒子的字样用省略号代替
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
       }
-    }
-    &:hover {
-      li {
+      &:hover {
         .product-img {
           border-color: @base-color;
         }

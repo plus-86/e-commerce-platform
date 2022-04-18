@@ -9,7 +9,7 @@
         @click="toDetail(item.id)"
       >
         <div class="movable-box">
-          <img :src="'http://sc.wolfcode.cn/' + item.coverImg" alt="" />
+          <img :src="imgBaseUrl + item.coverImg" alt="" />
           <h3>{{ item.name }}</h3>
           <section>
             <span>{{ item.coin }}</span>

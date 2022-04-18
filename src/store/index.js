@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import LoginModule from './login-module'
 import ToastState from './toast-state'
 import UserInfo from './user-info'
+import DetailTagState from './detail-tag-state'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   modules: {
     LoginModule,
     ToastState,
-    UserInfo
+    UserInfo,
+    DetailTagState
   }
 })
