@@ -25,7 +25,7 @@ import { mapMutations } from 'vuex'
 export default {
   props: ['asideData'],
   methods: {
-    ...mapMutations('DetailDataState', ['initTag']),
+    ...mapMutations('DetailDataState', ['initTag']), // 初始化产品和图片标签
     toDetail(id) {
       // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
       this.$router.push(`/detail?id=${id}`)

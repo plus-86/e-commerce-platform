@@ -105,10 +105,13 @@ export default {
     },
     // 切换规格
     changeType(index, id) {
-      // 切换尺码/规格
-      this.changeTypeTagNum(index)
-      // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
-      this.$router.push(`/detail?id=${id}`)
+      // 如果当前被点击的标签是已选中的标签就什么也不做
+      if (index !== this.typeTagNum) {
+        // 切换尺码/规格
+        this.changeTypeTagNum(index)
+        // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
+        this.$router.push(`/detail?id=${id}`)
+      }
     },
     controlAmount(val) {
       // 用一个函数同时控制加减

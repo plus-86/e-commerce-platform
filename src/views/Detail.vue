@@ -1,11 +1,17 @@
 <template>
   <div class="Detail">
     <div class="center">
-      <Crumb></Crumb>
+      <Crumb :nav="nav"></Crumb>
       <div class="product-detail">
         <Main ref="Main" :mainData="mainData"></Main>
         <Aside :asideData="asideData"></Aside>
       </div>
+      <ul class="tag">
+        <li @click="cc" :class="showIssue ? 'active' : ''">商品详情</li>
+        <li @click="cc" :class="!showIssue ? 'active' : ''">常见问题</li>
+      </ul>
+      <div class="productDetail" v-show="showIssue" v-html="richText"></div>
+      <div class="commonProblem" v-show="!showIssue">常见问题常见问题</div>
     </div>
   </div>
 </template>
@@ -18,11 +24,22 @@ import Aside from '@/components/detail/Aside'
 export default {
   data() {
     return {
+      // Main组件的数据
       mainData: {},
-      asideData: {}
+      // Aside组件数据
+      asideData: {},
+      // Crumb组件数据
+      nav: [],
+      // 商品详情/常见问题标签切换
+      showIssue: true,
+      // 富文本
+      richText: ''
     }
   },
   methods: {
+    cc() {
+      this.showIssue = !this.showIssue
+    },
     async getProductDetail(id) {
       let productRes = await productDetail(id)
       if (!productRes) return
@@ -42,6 +59,12 @@ export default {
       this.asideData = {
         thenYouCanBuy: thenYouCanBuy
       }
+      this.nav = productRes.data.nav
+
+      this.richText = productInfo.description.replaceAll(
+        'upload',
+        this.imgBaseUrl + '/upload'
+      )
       // 切换产品 或 规格 复位产品数量
       this.$refs.Main.productAmount = 1
     }
@@ -72,10 +95,29 @@ export default {
 </script>
 
 <style scoped lang="less">
+@import '~@/assets/css/global-style.less';
+
 .Detail {
+  background: #f5f5f5;
+  font-size: 18px;
   .center {
     .product-detail {
       display: flex;
+    }
+    .tag {
+      display: flex;
+      li {
+        width: 120px;
+        height: 50px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 50px;
+        cursor: pointer;
+        &.active {
+          background: @base-color;
+          color: #fff;
+        }
+      }
     }
   }
 }
