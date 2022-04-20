@@ -35,12 +35,15 @@ export default {
         name: productInfo.name,
         seriesSubTitle: productInfo.seriesSubTitle,
         coin: productInfo.coin,
-        parameterJson: productInfo.parameterJson
+        parameterJson: productInfo.parameterJson,
+        stock: productInfo.stock
       }
 
       this.asideData = {
         thenYouCanBuy: thenYouCanBuy
       }
+      // 切换产品 或 规格 复位产品数量
+      this.$refs.Main.productAmount = 1
     }
   },
   async created() {

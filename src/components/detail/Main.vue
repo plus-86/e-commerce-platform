@@ -38,11 +38,25 @@
           </li>
         </ul>
       </div>
-      <h3>数量</h3>
+      <h3>
+        数量<span class="stock">*礼品库存{{ mainData.stock }}件</span>
+      </h3>
       <div class="count">
-        <div class="reduce"><i class="icon iconfont icon-add"></i></div>
-        <input type="text" disabled value="1" />
-        <div class="plus"><i class="icon iconfont icon-minus"></i></div>
+        <div
+          class="plus"
+          :class="productAmount === mainData.stock ? 'not-allowed' : ''"
+          @click="controlAmount(1)"
+        >
+          <i class="icon iconfont icon-add"></i>
+        </div>
+        <input type="text" @input="inputAmount()" v-model="productAmount" />
+        <div
+          class="reduce"
+          :class="productAmount === 1 ? 'not-allowed' : ''"
+          @click="controlAmount(-1)"
+        >
+          <i class="icon iconfont icon-minus"></i>
+        </div>
       </div>
       <div class="btns">
         <div class="add-to-cart">加入购物车</div>
@@ -58,13 +72,13 @@ export default {
   data() {
     return {
       // 大图片的渲染
-      coverImg: ''
-      // imgNum: 0,
-      // typeNum: 0
+      coverImg: '',
+      // 产品数量
+      productAmount: 1
     }
   },
   computed: {
-    ...mapState('DetailTagState', ['imgTagNum', 'typeTagNum'])
+    ...mapState('DetailDataState', ['imgTagNum', 'typeTagNum'])
   },
   // 功能: 把从父组件传过来的 mainImgArr 的第一个数据的图片作为 初始封面
   // 问题: 直接拿 mainImgArr[0].src 绑定到 第5行 img内 时会报错
@@ -81,18 +95,50 @@ export default {
   },
   props: ['mainData'],
   methods: {
-    ...mapMutations('DetailTagState', ['changeImgTagNum', 'changeTypeTagNum']),
+    ...mapMutations('DetailDataState', ['changeImgTagNum', 'changeTypeTagNum']),
+    // 切换图片
     changeImg(index) {
       // 改大图
       this.coverImg = this.mainData.mainImgArr[index].src
       // 改小图
       this.changeImgTagNum(index)
     },
+    // 切换规格
     changeType(index, id) {
       // 切换尺码/规格
       this.changeTypeTagNum(index)
       // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
       this.$router.push(`/detail?id=${id}`)
+    },
+    controlAmount(val) {
+      // 用一个函数同时控制加减
+      // 传入一个val参数 1 代表加 -1代表减
+      if (
+        (val === -1 && this.productAmount <= 1) || // 当前input框内的数字不能小于1
+        (val === 1 && this.productAmount >= this.mainData.stock) // 当前input框内的数字不能大于库存数
+      ) {
+        return
+      }
+      // 用传入的参数做递增或递减
+      this.productAmount += val
+    },
+    // 输入商品数量
+    inputAmount() {
+      // 只能输入正整数
+      // 如果输入的商品数量不是数字, 则用空字符串代替( 就是删掉 ),
+      this.productAmount = this.productAmount.replace(/[^\d]/g, '') // /[^\d]/g 的意思是 非数字 并 查找所有匹配而非在找到第一个匹配后停止
+      // 如果输入的数字大于库存, 则商品数量为最大库存
+      if (this.productAmount > this.mainData.stock) {
+        this.productAmount = this.mainData.stock
+      }
+      // 如果输入的数字小于1, 则商品数量为1
+      if (this.productAmount < 1) {
+        // 当删掉所有数字时,this.productAmount为 空字符串, 它会去做一个正则匹配: 空字符串 属于 非数字, 但取代这个空字符串的依然是空字符串
+        // 空字符串被转化成数字0 ( Number('')===0 )
+        // 0 比 1 小, 进入条件后 给this.productAmount 赋值1
+        // 所以input框内的数字是删除不掉的
+        this.productAmount = 1
+      }
     }
   }
 }
@@ -164,6 +210,10 @@ export default {
       font-size: 16px;
       font-weight: inherit;
       margin: 19px 0 14px;
+      .stock {
+        font-size: 12px;
+        color: #999;
+      }
     }
     ul {
       display: flex;
@@ -194,6 +244,11 @@ export default {
         height: 28px;
         line-height: 28px;
         border: 1px solid #999;
+        color: #000;
+        cursor: pointer;
+      }
+      .not-allowed {
+        cursor: not-allowed;
         color: #999;
       }
       input {

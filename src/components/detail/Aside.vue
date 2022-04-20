@@ -25,7 +25,7 @@ import { mapMutations } from 'vuex'
 export default {
   props: ['asideData'],
   methods: {
-    ...mapMutations('DetailTagState', ['initTag']),
+    ...mapMutations('DetailDataState', ['initTag']),
     toDetail(id) {
       // 点击后改变地址栏id, Detail组件监听到id改变, 发起请求, 而不用重载页面, 提高用户体验
       this.$router.push(`/detail?id=${id}`)
