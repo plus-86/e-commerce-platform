@@ -39,6 +39,7 @@ export default {
 <style scoped lang="less">
 .Strategy {
   color: #fff;
+  padding-bottom: 47px;
   ul {
     display: flex;
     justify-content: space-between;
