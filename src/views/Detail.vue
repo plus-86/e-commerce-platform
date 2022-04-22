@@ -7,8 +7,12 @@
         <Aside :asideData="asideData"></Aside>
       </div>
       <ul class="tag">
-        <li @click="cc" :class="showIssue ? 'active' : ''">商品详情</li>
-        <li @click="cc" :class="!showIssue ? 'active' : ''">常见问题</li>
+        <li @click="changeIssue" :class="showIssue ? 'active' : ''">
+          商品详情
+        </li>
+        <li @click="changeIssue" :class="!showIssue ? 'active' : ''">
+          常见问题
+        </li>
       </ul>
       <div class="productDetail" v-show="showIssue" v-html="richText"></div>
       <div class="commonProblem" v-show="!showIssue">
@@ -68,9 +72,11 @@ export default {
     }
   },
   methods: {
-    cc() {
+    // 商品详情/常见问题tag切换
+    changeIssue() {
       this.showIssue = !this.showIssue
     },
+    // 获取商品详情
     async getProductDetail(id) {
       let productRes = await productDetail(id)
       if (!productRes) return
@@ -91,7 +97,7 @@ export default {
         thenYouCanBuy: thenYouCanBuy
       }
       this.nav = productRes.data.nav
-
+      // 给富文本添加内容
       let rt = productInfo.description.replaceAll(
         'upload',
         this.imgBaseUrl + '/upload'

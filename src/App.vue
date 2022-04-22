@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TopBar></TopBar>
+    <TopBar :key="topBarKeyValue"></TopBar>
     <Header></Header>
     <router-view />
     <Footer></Footer>
@@ -16,13 +16,16 @@ import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 import Login from '@/components/common/Login'
 import Toast from '@/components/common/Toast'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'app',
+
   computed: {
     ...mapState('LoginModule', ['whetherToShowLoginModule']), // mapState去找根文件下的LoginModule，然后再找LoginModule里的whetherToShowLoginModule
-    ...mapState('ToastState', ['showToast'])
+    ...mapState('ToastState', ['showToast']),
+    ...mapState('ReloadTopBarModule', ['topBarKeyValue'])
   },
+
   components: {
     TopBar,
     Header,

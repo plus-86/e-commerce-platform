@@ -27,3 +27,7 @@ export const wechatBindingLogin = (param) =>
 
 // 获取登录用户信息
 export const getUserInfo = () => instance.get('/shop/userProfiles')
+
+// 加入购物车
+export const addToCartAPI = (param) =>
+  instance.post('/shop/carts/add', qs.stringify(param))

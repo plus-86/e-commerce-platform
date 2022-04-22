@@ -27,7 +27,6 @@ export default {
     async asyncChangeUserInfo({ commit }) {
       // 结构了一下commit，本来是state→state.commit('', )
       let userInfoRes = await getUserInfo()
-      console.log(userInfoRes)
       commit('changeUserInfo', userInfoRes.data)
     }
   }

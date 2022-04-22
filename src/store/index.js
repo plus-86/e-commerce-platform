@@ -4,6 +4,7 @@ import LoginModule from './login-module'
 import ToastState from './toast-state'
 import UserInfo from './user-info'
 import DetailDataState from './detail-data-state'
+import ReloadTopBarModule from './reload-top-bar-module'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     LoginModule,
     ToastState,
     UserInfo,
-    DetailDataState
+    DetailDataState,
+    ReloadTopBarModule
   }
 })

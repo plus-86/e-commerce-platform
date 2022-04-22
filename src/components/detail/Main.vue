@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="btns">
-        <div class="add-to-cart">加入购物车</div>
+        <div @click="addToCart" class="add-to-cart">加入购物车</div>
         <div class="buy-now">立即购买</div>
       </div>
     </div>
@@ -67,7 +67,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { addToCartAPI } from '@/request/api.js'
 export default {
   data() {
     return {
@@ -96,6 +97,30 @@ export default {
   props: ['mainData'],
   methods: {
     ...mapMutations('DetailDataState', ['changeImgTagNum', 'changeTypeTagNum']),
+    ...mapActions('ToastState', ['asyncChangeToastState']),
+
+    ...mapMutations('ReloadTopBarModule', ['reloadTopBar']),
+    // 加入购物车
+    async addToCart() {
+      let res = await addToCartAPI({
+        productId: this.$route.query.id,
+        total: this.productAmount
+      })
+      if (!res) return
+      if (res.code === 400) {
+        this.asyncChangeToastState({
+          classType: 'warning',
+          msg: res.message
+        })
+      } else {
+        this.asyncChangeToastState({
+          classType: 'success',
+          msg: '添加物品成功'
+        })
+      }
+      // 重载topbar组件
+      this.reloadTopBar()
+    },
     // 切换图片
     changeImg(index) {
       // 改大图
