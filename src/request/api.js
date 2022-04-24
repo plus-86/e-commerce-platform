@@ -1,5 +1,9 @@
 import instance from './request'
 import qs from 'qs' // cnpm i qs
+// 获取全部商品(含首页更多，搜索) get请求带请求体（QueryString）参数的写法
+
+export const searchProduct = (params) => instance.get('/products', { params }) // 注意参数名为params不是param 即{ params: params }
+
 // 获取精品推荐
 export const productRecommend = () => instance.get('/products/recommend')
 

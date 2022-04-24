@@ -5,9 +5,10 @@
         class="fixed-box"
         v-for="(item, index) in list"
         :key="item.id"
-        v-show="index < maxLength"
+        v-show="maxLength ? index < maxLength : true"
         @click="toDetail(item.id)"
       >
+        <!-- 存在maxLength的话 展示maxLength的数字，否则放开全部展示 -->
         <div class="movable-box">
           <img :src="imgBaseUrl + item.coverImg" alt="" />
           <h3>{{ item.name }}</h3>
@@ -78,6 +79,7 @@ export default {
 
         h3 {
           font-weight: 100;
+          font-size: 18px;
         }
         section {
           display: flex;

@@ -37,8 +37,13 @@
         </ul>
       </div>
       <div class="right">
-        <input type="text" placeholder="请输入要搜索的商品" />
-        <div class="btn">
+        <input
+          type="text"
+          placeholder="请输入要搜索的商品"
+          @keyup.13="searchByKeyword"
+          v-model="userInput"
+        />
+        <div class="btn" @click="searchByKeyword">
           <i class="icon iconfont icon-search1187938easyiconnet"></i>
         </div>
       </div>
@@ -48,7 +53,20 @@
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  data() {
+    return {
+      userInput: ''
+    }
+  },
+  methods: {
+    searchByKeyword() {
+      // 跳转到goods页面把参数交给goods页面处理
+      this.$router.push(`/goods?keyword=${this.userInput}`)
+      // 清空搜索栏
+      this.userInput = ''
+    }
+  }
 }
 </script>
 
