@@ -18,7 +18,7 @@
           </li>
           <li
             :class="$route.path === '/user' ? 'active' : ''"
-            @click="$router.push('/user')"
+            @click="$router.push('/user/manage')"
           >
             个人中心
           </li>

@@ -26,7 +26,49 @@ const routes = [
   },
   {
     path: '/user',
-    component: () => import('@/views/User.vue')
+    component: () => import('@/views/User.vue'),
+    children: [
+      {
+        path: 'manage',
+        name: 'manage',
+        component: () => import('@/views/user/Manage.vue')
+      },
+      {
+        path: 'order',
+        name: 'order',
+        component: () => import('@/views/user/Order.vue')
+      },
+      {
+        path: 'cart',
+        name: 'cart',
+        component: () => import('@/views/user/Cart.vue')
+      },
+      {
+        path: 'message',
+        name: 'message',
+        component: () => import('@/views/user/Message.vue')
+      },
+      {
+        path: 'detail',
+        name: 'detail',
+        component: () => import('@/views/user/Detail.vue')
+      },
+      {
+        path: 'strategy',
+        name: 'strategy',
+        component: () => import('@/views/user/Strategy.vue')
+      },
+      {
+        path: 'address',
+        name: 'address',
+        component: () => import('@/views/user/Address.vue')
+      },
+      {
+        path: 'safety',
+        name: 'safety',
+        component: () => import('@/views/user/Safety.vue')
+      }
+    ]
   },
   {
     path: '/order',
