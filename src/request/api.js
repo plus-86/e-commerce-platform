@@ -35,3 +35,14 @@ export const getUserInfo = () => instance.get('/shop/userProfiles')
 // 加入购物车
 export const addToCartAPI = (param) =>
   instance.post('/shop/carts/add', qs.stringify(param))
+
+// 解除绑定
+export const unbindWechat = (param) =>
+  instance.put('/wechatUsers/unbindingWeChat', qs.stringify(param))
+
+// 购物车列表
+export const cartList = (params) => instance.get('/shop/carts', { params })
+
+// 删除购物车物品
+export const deleteProduct = (params) =>
+  instance.delete('/shop/carts', { params })

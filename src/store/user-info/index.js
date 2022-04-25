@@ -6,13 +6,15 @@ export default {
     userInfo: {
       nickName: '游客',
       coin: 0,
-      headImg: 'icon iconfont icon-youke'
+      headImg: 'icon iconfont icon-youke',
+      phone: ''
     }
   },
   mutations: {
     changeUserInfo(state, payload) {
       state.cartTotal = payload.cartTotal
       state.userInfo = payload.userInfo
+      state.phone = payload.phone
     },
     initUserInfo(state) {
       state.cartTotal = 0

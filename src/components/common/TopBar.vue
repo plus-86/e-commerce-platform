@@ -19,7 +19,11 @@
           >
             登录
           </li>
-          <li class="btn cart" v-show="hasLogin">
+          <li
+            @click="$router.push('/user/cart')"
+            class="btn cart"
+            v-show="hasLogin"
+          >
             <i class="icon iconfont icon-gouwuche"></i>
             <span class="cart-text">购物车</span>
             <span class="number">{{ cartTotal }}</span>

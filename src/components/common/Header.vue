@@ -17,8 +17,8 @@
             全部商品
           </li>
           <li
-            :class="$route.path === '/user' ? 'active' : ''"
-            @click="$router.push('/user/manage')"
+            :class="$route.path.indexOf('/user') !== -1 ? 'active' : ''"
+            @click="$router.push('/user')"
           >
             个人中心
           </li>

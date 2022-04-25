@@ -1,21 +1,21 @@
 <template>
   <div class="User">
     <div class="center">
-      <Crumb
-        :nav="[{ name: '首页' }, { name: '个人中心' }, { name: '账号管理' }]"
-      ></Crumb>
+      <Crumb :nav="nav"></Crumb>
       <div class="box">
         <div class="l">
-          <img
-            class="avatar"
-            src="https://thirdwx.qlogo.cn/mmopen/vi_32/Q3auHgzwzM6uI4iciaXRaOZK7vhrBuh7BoicNVNh9aFZLwqoBkrJYqKoNiazGq8bEPEJzIs670gxSlohiaKEoRwE2VA/132"
-            alt=""
-          />
+          <img class="avatar" :src="userInfo.headImg" alt="" />
 
           <div class="userInfo">
-            <span>阿白：</span>
-            <span>0分</span>
+            <span>{{ userInfo.nickName }}：</span>
+            <span>{{ userInfo.coin }}分</span>
+            <div class="operation">
+              [<span @click="exit">退出</span>][<span @click="unbindingWechat"
+                >解绑微信</span
+              >]
+            </div>
           </div>
+
           <div v-for="(item, index) in title" :key="index">
             <div class="title">
               <i class="icon iconfont icon-peizhiguanli"></i>
@@ -26,7 +26,7 @@
                 :class="
                   group === item.group ? (tag === idx ? 'active' : '') : ''
                 "
-                @click="changeTag(item.group, idx, val.path)"
+                @click="changeTag(item.group, idx, val.path, val.name)"
                 v-for="(val, idx) in item.option"
                 :key="idx"
               >
@@ -44,11 +44,17 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import store from '@/store/index.js'
 import Crumb from '@/components/common/Crumb.vue'
+import { unbindWechat } from '@/request/api.js'
 export default {
+  computed: {
+    ...mapState('UserInfo', ['userInfo'])
+  },
   data() {
     return {
+      nav: [{ name: '首页' }, { name: '个人中心' }, { name: '账号管理' }],
       group: 0,
       tag: 0,
       title: [
@@ -76,10 +82,35 @@ export default {
     }
   },
   methods: {
-    changeTag(group, index, path) {
+    ...mapActions('ToastState', ['asyncChangeToastState']),
+    // 切换标签
+    changeTag(group, index, path, navTagName) {
       this.group = group
       this.tag = index
+      this.nav[2].name = navTagName
       this.$router.push(`/user/${path}`)
+    },
+    // 退出
+    exit() {
+      localStorage.removeItem('x-auth-token')
+      this.asyncChangeToastState({
+        msg: '您已退出登录，即将返回首页',
+        classType: 'success'
+      })
+      setTimeout(() => {
+        this.$router.push('/')
+      }, 2000)
+    },
+    // 解绑微信
+    async unbindingWechat() {
+      let res = await unbindWechat({
+        phone: this.userInfo.phone
+      })
+      if (!res) return
+      this.asyncChangeToastState({
+        msg: res.data,
+        classType: 'success'
+      })
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -127,6 +158,16 @@ export default {
         .userInfo {
           text-align: center;
           margin-bottom: 43px;
+          .operation {
+            font-size: 14px;
+            span {
+              color: @base-color;
+              &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+              }
+            }
+          }
         }
         .title {
           display: flex;
@@ -153,7 +194,7 @@ export default {
         }
       }
       .r {
-        flex: 1;
+        width: 940px;
       }
     }
   }
