@@ -6,12 +6,12 @@
           <th width="50">
             <i
               v-show="!hasTotalSelected"
-              @click="hasTotalSelected = true"
+              @click="selectAll"
               class="icon iconfont icon-fangkuangweixuan"
             ></i>
             <i
               v-show="hasTotalSelected"
-              @click="hasTotalSelected = false"
+              @click="selectAll"
               class="icon iconfont icon-shixinfangkuangxuanzhong"
             ></i>
           </th>
@@ -25,9 +25,14 @@
       <tbody>
         <tr v-for="(item, index) in productList" :key="index">
           <td>
-            <i class="icon iconfont icon-fangkuangweixuan"></i>
             <i
-              v-show="false"
+              v-show="!item.hasSelected"
+              @click="item.hasSelected = !item.hasSelected"
+              class="icon iconfont icon-fangkuangweixuan"
+            ></i>
+            <i
+              v-show="item.hasSelected"
+              @click="item.hasSelected = !item.hasSelected"
               class="icon iconfont icon-shixinfangkuangxuanzhong"
             ></i>
           </td>
@@ -88,10 +93,22 @@ export default {
       hasTotalSelected: false
     }
   },
+  watch: {
+    productList: {
+      handler(newVal, oldVal) {
+        if (newVal.every((cVal) => cVal.hasSelected === true)) {
+          // 全选
+          this.hasTotalSelected = true
+        } else {
+          // 全反选
+          this.hasTotalSelected = false
+        }
+      },
+      deep: true
+    }
+  },
   computed: {
     ...mapState('UserInfo', ['userInfo']),
-    // 全部勾选
-    selectAll() {},
     // 所有商品共计积分
     amount() {
       let count = 0
@@ -116,6 +133,19 @@ export default {
       }
       // 用传入的参数做递增或递减
       this.productList[index].total += val
+    },
+    // 全选\取消全选
+    selectAll() {
+      this.hasTotalSelected = !this.hasTotalSelected
+      if (this.hasTotalSelected === false) {
+        for (let i in this.productList) {
+          this.productList[i].hasSelected = false
+        }
+      } else {
+        for (let i in this.productList) {
+          this.productList[i].hasSelected = true
+        }
+      }
     },
     // 提交
     submit() {
@@ -149,10 +179,19 @@ export default {
         if (!res2) return
         this.productList[i].stock = res2.data.productInfo.stock
       }
+    },
+    // 初始化商品选择
+    init() {
+      for (let i in this.productList) {
+        // 像这样直接向响应式对象中添加一个property this.productList[i].hasSelected = false, 那么这个新增的属性并不是响应式的
+        // 调用$set API 以添加新的响应式property 即可
+        this.$set(this.productList[i], 'hasSelected', false)
+      }
     }
   },
-  created() {
-    this.getCartList()
+  async created() {
+    await this.getCartList()
+    await this.init()
   }
 }
 </script>
