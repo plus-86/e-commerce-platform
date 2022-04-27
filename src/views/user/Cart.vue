@@ -107,20 +107,21 @@ export default {
         // 1.当购物车列表为空进购物车页时会自动勾选 全选按钮,
         // 2.在全选物品状态下删掉购物车内所有物品时，全选按钮依然是勾选的
         // 这里return掉就可以了
-        // 这里return掉后, 第2种情况会出问题: 当删掉购物车内所有物品, 此时购物车列表为空, 即数组长度为0, 所以走到下面的判断就会被return掉, 而此时 this.hasTotalSelected的值依然为true, 所以购物车内所有的物品时全选按钮依然时勾选的, 那么只需要在下面if里给this.hasTotalSelected = false即可
+        // 这里return掉后, 第2种情况会出问题: 当列表商品为全选状态时删掉购物车内所有物品, 此时购物车列表为空, 即数组长度为0, 所以走到下面的判断就会被return掉, 而此时 this.hasTotalSelected的值依然为true, 所以购物车内所有的物品时全选按钮依然时勾选的, 那么只需要在下面if里给this.hasTotalSelected = false即可
         if (newVal.length === 0) {
           this.hasTotalSelected = false
           return
         }
-
+        //当每一项hasSelected都选中时
         if (newVal.every((cVal) => cVal.hasSelected === true)) {
-          // 全选
+          // 勾选表头选择框
           this.hasTotalSelected = true
         } else {
-          // 全反选
+          // 否则，取消勾选表头选择框
           this.hasTotalSelected = false
         }
       },
+      // 深度监听
       deep: true
     }
   },

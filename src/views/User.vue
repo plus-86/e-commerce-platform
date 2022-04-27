@@ -81,13 +81,6 @@ export default {
   },
   methods: {
     ...mapActions('ToastState', ['asyncChangeToastState']),
-    // 切换标签
-    changeTag(group, index, path, navTagName) {
-      this.group = group
-      this.tag = index
-      this.nav[2].name = navTagName
-      this.$router.push(`/user/${path}`)
-    },
     // 退出
     exit() {
       localStorage.removeItem('x-auth-token')
