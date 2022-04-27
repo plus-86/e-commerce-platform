@@ -29,7 +29,11 @@
           </li>
         </ul>
       </div>
-      <Product :list="list"></Product>
+      <Product :list="showList"></Product>
+      <div class="loadingText">
+        <p v-show="isLoading">正在加载...</p>
+        <p v-show="hasReachedBottom">没有更多了</p>
+      </div>
     </div>
   </div>
 </template>
@@ -38,11 +42,18 @@
 import Product from '@/components/common/Product'
 import Crumb from '@/components/common/Crumb'
 import { searchProduct } from '@/request/api.js'
+import {
+  getScrollTop,
+  getClientHeight,
+  getScrollHeight
+} from '@/utils/index.js'
 export default {
   data() {
     return {
-      // 渲染列表
+      // 所有产品列表
       list: [],
+      // 滚动加载产品列表
+      showList: [],
       tag1Num: 0,
       tag2Num: 0,
       tag1: [
@@ -52,8 +63,9 @@ export default {
         { msg: '500-1000分', min: 500, max: 1000 },
         { msg: '1000-1500分', min: 1000, max: 1500 },
         { msg: '1500-2500分', min: 1500, max: 2500 },
-        { msg: '2500-6500', min: 2500, max: 6500 },
-        { msg: '6500-10000', min: 6500, max: 10000 }
+        { msg: '2500-6500分', min: 2500, max: 6500 },
+        { msg: '6500-10000分', min: 6500, max: 10000 },
+        { msg: '10000分以上', min: 10000, max: 100000 }
       ],
       tag2: [
         { msg: '全部', type: 0 },
@@ -64,10 +76,55 @@ export default {
       type: 0, // 1实体商品 2虚拟商品 0全部
       min: 0, // 最大积分
       max: 0, // 最小积分
-      keyword: '' // 商品关键字
+      keyword: '', // 商品关键字
+      // 触底加载数据
+      page: 1,
+      size: 8,
+      isLoading: false, // 节流: 利用一个变量，控制代码在一段时间内(setTimeOut)不会重复触发执行
+      hasReachedBottom: false
     }
   },
+  mounted() {
+    // 进入组件加载监听事件
+    window.addEventListener('scroll', this.scrollLoading) // addEventListener('监听事件', 执行函数)
+  },
+  beforeDestroy() {
+    // 离开组件后删除监听事件
+    window.removeEventListener('scroll', this.scrollLoading)
+  },
   methods: {
+    //滚动加载
+    scrollLoading() {
+      //  窗口高度 + 超出窗口的高度 >= 页面高度 - 20
+      if (getClientHeight() + getScrollTop() >= getScrollHeight() - 20) {
+        // 所有图片都加载完了
+        if (this.showList.length >= this.list.length) {
+          // 更改加载字样
+          this.hasReachedBottom = true
+          // 不再执行下面的代码, 提升性能
+          return
+        }
+
+        // 如果为false进入加载
+        if (this.isLoading === false) {
+          // 把状态改为true, 500ms(setTimeOut)内该函数不会重复触发执行
+          this.isLoading = true
+          setTimeout(() => {
+            this.page++ // 从第二页开始
+            for (
+              let i = (this.page - 1) * this.size;
+              i < this.size * this.page;
+              i++
+            ) {
+              // 针对最后一页，如果有才push到数组里
+              this.list[i] ? this.showList.push(this.list[i]) : ''
+            }
+            // 500ms后当执行循环遍历, 遍历结束后isLoading状态改为false, 此时可以重新触发该函数
+            this.isLoading = false
+          }, 500)
+        }
+      }
+    },
     // 按积分搜
     searchByScore(index, min, max) {
       // 点亮标签
@@ -107,6 +164,15 @@ export default {
         keyword: this.keyword
       })
       this.list = res.data
+      this.showList = this.list.filter((item, index) => index < 8)
+      // 滚动加载数据初始化
+      this.hasReachedBottom = false
+      this.page = 1
+      // 所选类别，没有数据
+      if (this.showList.length >= this.list.length) {
+        // 更改加载字样
+        this.hasReachedBottom = true
+      }
     }
   },
   watch: {
@@ -139,6 +205,13 @@ export default {
   font-size: 18px;
   font-weight: 100;
   .center {
+    .loadingText {
+      height: 24px;
+      p {
+        margin: 0;
+      }
+    }
+
     .tagBox {
       padding: 40px 0 8px;
       .tag1,
