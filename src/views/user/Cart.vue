@@ -70,11 +70,16 @@
           </td>
           <td>{{ item.total * item.coin }}鸡腿</td>
           <td>
-            <div @click="remove(item.id)" class="del">删除</div>
+            <div @click="remove(item.id, index)" class="del">删除</div>
           </td>
         </tr>
       </tbody>
     </table>
+    <div v-show="productList.length === 0" class="empty">
+      <div class="icon"><img src="@/assets/icon/empty-cart.svg" alt="" /></div>
+      <div class="txt">购物车还是空的</div>
+      <div @click="$router.push('/')" class="btn">去逛逛</div>
+    </div>
     <h3>
       总计：<span>{{ amount }}鸡腿</span>
     </h3>
@@ -94,8 +99,20 @@ export default {
     }
   },
   watch: {
+    // 通过监听productList每一项的hasSelected，来控制hasTotalSelected
     productList: {
       handler(newVal, oldVal) {
+        // 因为every收到的数组如果是空的，所以不管什么情况都会返回true,
+        // 所以会遇到两种状况:
+        // 1.当购物车列表为空进购物车页时会自动勾选 全选按钮,
+        // 2.在全选物品状态下删掉购物车内所有物品时，全选按钮依然是勾选的
+        // 这里return掉就可以了
+        // 这里return掉后, 第2种情况会出问题: 当删掉购物车内所有物品, 此时购物车列表为空, 即数组长度为0, 所以走到下面的判断就会被return掉, 而此时 this.hasTotalSelected的值依然为true, 所以购物车内所有的物品时全选按钮依然时勾选的, 那么只需要在下面if里给this.hasTotalSelected = false即可
+        if (newVal.length === 0) {
+          this.hasTotalSelected = false
+          return
+        }
+
         if (newVal.every((cVal) => cVal.hasSelected === true)) {
           // 全选
           this.hasTotalSelected = true
@@ -113,15 +130,19 @@ export default {
     amount() {
       let count = 0
       for (let i in this.productList) {
-        let simpleItemAmount =
-          this.productList[i].total * this.productList[i].coin
-        count += simpleItemAmount
+        // 选中的算总计
+        if (this.productList[i].hasSelected === true) {
+          let simpleItemAmount =
+            this.productList[i].total * this.productList[i].coin
+          count += simpleItemAmount
+        }
       }
       return count
     }
   },
   methods: {
     ...mapActions('ToastState', ['asyncChangeToastState']),
+    ...mapActions('UserInfo', ['asyncChangeUserInfo']),
     controlAmount(val, stock, index, total) {
       // 用一个函数同时控制加减
       // 传入一个val参数 1 代表加 -1代表减
@@ -155,7 +176,7 @@ export default {
       })
     },
     // 删除商品
-    async remove(id) {
+    async remove(id, index) {
       let res = await deleteProduct({
         productId: id,
         phone: this.userInfo.phone
@@ -165,7 +186,10 @@ export default {
         msg: res.data.message,
         classType: 'success'
       })
-      this.getCartList()
+      // 这里用this.getCartList()获取新数据会把在initSelect()赋值的hasSelected覆盖掉,导致单项选择产品的按钮失效以及其他的渲染问题, 所以采取直接把点击项删除。
+      this.productList.splice(index, 1)
+      // 更新TopBar购物车显示的数量
+      this.asyncChangeUserInfo()
     },
     // 获取购物车列表
     async getCartList() {
@@ -181,7 +205,7 @@ export default {
       }
     },
     // 初始化商品选择
-    init() {
+    initSelect() {
       for (let i in this.productList) {
         // 像这样直接向响应式对象中添加一个property this.productList[i].hasSelected = false, 那么这个新增的属性并不是响应式的
         // 调用$set API 以添加新的响应式property 即可
@@ -191,7 +215,7 @@ export default {
   },
   async created() {
     await this.getCartList()
-    await this.init()
+    await this.initSelect()
   }
 }
 </script>
@@ -215,6 +239,28 @@ export default {
     width: 100px;
     float: right;
     cursor: pointer;
+  }
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .icon {
+      margin-top: 100px;
+    }
+    .txt {
+      margin-top: 70px;
+      color: #b4b5b5;
+    }
+    .btn {
+      color: #fff;
+      background: @base-color;
+      width: 100px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 40px;
+      margin-top: 35px;
+      cursor: pointer;
+    }
   }
   table {
     width: 100%;

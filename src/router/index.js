@@ -33,8 +33,13 @@ const routes = [
   {
     path: '/user', // 进入user
     component: () => import('@/views/User.vue'),
-    redirect: '/user/manage', // 重定向到user/manage
+    redirect: '/user/cart', // 重定向到user/manage
     children: [
+      {
+        path: 'cart',
+        name: 'cart',
+        component: () => import('@/views/user/Cart.vue')
+      },
       // {
       //   path: 'manage',
       //   name: 'manage',
@@ -45,11 +50,7 @@ const routes = [
       //   name: 'order',
       //   component: () => import('@/views/user/Order.vue')
       // },
-      {
-        path: 'cart',
-        name: 'cart',
-        component: () => import('@/views/user/Cart.vue')
-      },
+
       // {
       //   path: 'message',
       //   name: 'message',
@@ -81,14 +82,14 @@ const routes = [
       }
     ]
   },
-  // {
-  //   path: '/order',
-  //   component: () => import('@/views/Order.vue')
-  // },
-  // {
-  //   path: '/welfare',
-  //   component: () => import('@/views/Welfare.vue')
-  // },
+  {
+    path: '/order',
+    component: () => import('@/views/Order.vue')
+  },
+  {
+    path: '/welfare',
+    component: () => import('@/views/Welfare.vue')
+  },
   {
     path: '/detail',
     component: () => import('@/views/Detail.vue')

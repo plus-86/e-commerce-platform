@@ -4,14 +4,14 @@
       <div class="left">欢迎来到皇家大麦茶积分商城</div>
       <div class="right">
         <ul>
-          <li class="user-info" @click="hasLogin === false ? hdclick() : ''">
+          <li class="user-info" @click="hdclick">
             <i :class="userInfo.headImg" v-show="!hasLogin"></i>
             <img :src="userInfo.headImg" alt="" v-show="hasLogin" />
             用户名：{{ userInfo.nickName }}
           </li>
-          <li>我的积分：{{ userInfo.coin }}</li>
-          <li>获取积分</li>
-          <li>叩丁狼官网</li>
+          <li @click="hdclick">我的积分：{{ userInfo.coin }}</li>
+          <li @click="attention">获取积分</li>
+          <li @click="attention">叩丁狼官网</li>
           <li
             class="btn"
             @click="changeLoginModuleState(true)"
@@ -162,8 +162,18 @@ export default {
     ...mapActions('ToastState', ['asyncChangeToastState']),
     ...mapActions('UserInfo', ['asyncChangeUserInfo']),
     hdclick() {
+      if (this.hasLogin === false) {
+        this.asyncChangeToastState({
+          msg: '请先登录',
+          classType: 'warning'
+        })
+      } else {
+        this.$router.push('/user/manage')
+      }
+    },
+    attention() {
       this.asyncChangeToastState({
-        msg: '请先登录',
+        msg: '该功能暂未开放',
         classType: 'warning'
       })
     }

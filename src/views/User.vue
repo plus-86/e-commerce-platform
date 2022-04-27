@@ -23,10 +23,8 @@
             </div>
             <ul>
               <li
-                :class="
-                  group === item.group ? (tag === idx ? 'active' : '') : ''
-                "
-                @click="changeTag(item.group, idx, val.path, val.name)"
+                :class="$route.path === val.path ? 'active' : ''"
+                @click="$router.push(val.path)"
                 v-for="(val, idx) in item.option"
                 :key="idx"
               >
@@ -62,20 +60,20 @@ export default {
           group: 0,
           titleName: '交易管理',
           option: [
-            { name: '帐号管理', path: 'manage' },
-            { name: '我的订单', path: 'order' },
-            { name: '购物车', path: 'cart' },
-            { name: '消息通知', path: 'message' },
-            { name: '积分明细', path: 'detail' },
-            { name: '积分攻略', path: 'strategy' }
+            { name: '购物车', path: '/user/cart' },
+            { name: '帐号管理', path: '/user/manage' },
+            { name: '我的订单', path: '/user/order' },
+            { name: '消息通知', path: '/user/message' },
+            { name: '积分明细', path: '/user/detail' },
+            { name: '积分攻略', path: '/user/strategy' }
           ]
         },
         {
           group: 1,
           titleName: '个人信息管理',
           option: [
-            { name: '地址管理', path: 'address' },
-            { name: '账号安全', path: 'safety' }
+            { name: '地址管理', path: '/user/address' },
+            { name: '账号安全', path: '/user/safety' }
           ]
         }
       ]
