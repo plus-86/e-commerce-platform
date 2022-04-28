@@ -28,7 +28,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (res) => {
     let res_data = res.data
-    // code为0、400、407时，业务逻辑为成功，把这个弹窗工具抽取出来
+    // code为0、400、407时，后台响应为成功，但是业务逻辑失败，把这个弹窗工具抽取出来
     if (res_data.code != 0 && res_data.code != 400 && res_data.code != 407) {
       // 不为0、400、407弹窗，return一个false给用到的页面做统一处理
       // 这里用自定义组件toast替换alert

@@ -14,31 +14,31 @@ export const productHot = () => instance.get('/products/hot')
 export const productDetail = (id) => instance.get(`/products/${id}`)
 
 // 获取验证码
-export const sendSMSCode = (param) =>
-  instance.post('/sendSMS', qs.stringify(param)) // 服务端要用qs转化过的数据
+export const sendSMSCode = (params) =>
+  instance.post('/sendSMS', qs.stringify(params)) // 服务端要用qs转化过的数据
 
 // 登录
-export const submitLogin = (param) =>
-  instance.post('/phoneRegin', qs.stringify(param))
+export const submitLogin = (params) =>
+  instance.post('/phoneRegin', qs.stringify(params))
 
 // 微信扫码登录
-export const wechatLogin = (param) =>
-  instance.post('/wechatUsers/PCLogin', qs.stringify(param))
+export const wechatLogin = (params) =>
+  instance.post('/wechatUsers/PCLogin', qs.stringify(params))
 
 // 手机绑定微信登录
-export const wechatBindingLogin = (param) =>
-  instance.post('/wechatUsers/binding', qs.stringify(param))
+export const wechatBindingLogin = (params) =>
+  instance.post('/wechatUsers/binding', qs.stringify(params))
 
 // 获取登录用户信息
 export const getUserInfo = () => instance.get('/shop/userProfiles')
 
 // 加入购物车
-export const addToCartAPI = (param) =>
-  instance.post('/shop/carts/add', qs.stringify(param))
+export const addToCartAPI = (params) =>
+  instance.post('/shop/carts/add', qs.stringify(params))
 
 // 解除绑定
-export const unbindWechat = (param) =>
-  instance.put('/wechatUsers/unbindingWeChat', qs.stringify(param))
+export const unbindWechat = (params) =>
+  instance.put('/wechatUsers/unbindingWeChat', qs.stringify(params))
 
 // 购物车列表
 export const cartList = (params) => instance.get('/shop/carts', { params })
