@@ -122,7 +122,7 @@ richText.replaceAll(被替换的内容, 新内容)
 
 不用写两个函数分别控制加减
 
-```
+```js
 controlAmount(val) {
   // 用一个函数同时控制加减
   // 传入一个val参数 1 代表加 -1代表减
@@ -156,6 +156,20 @@ inputAmount() {
     // 所以input框内的数字是删除不掉的
     this.productAmount = 1
   }
+}
+
+```
+
+### 验证手机号正则
+
+```js
+// 把验证手机号的方法封到一个utils里
+// src/utils/index.js
+
+export const verifyPhoneNumber = (value) => {
+  let reg =
+    /^(13[0-9]|14[01456789]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
+  return reg.test(value)
 }
 
 ```
@@ -208,25 +222,13 @@ inputAmount() {
 
 
 
-### 验证手机号正则
 
-```js
-// 把验证手机号的方法封到一个utils里
-// src/utils/index.js
-
-export const verifyPhoneNumber = (value) => {
-  let reg =
-    /^(13[0-9]|14[01456789]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
-  return reg.test(value)
-}
-
-```
 
 
 
 ## css
 
-### 全局样式
+### 全局样式（vue）
 
 像一些公共放到一个全局的css里引用
 
@@ -554,7 +556,7 @@ props:['maxLength']
 
 这样做的好处：不用额外再处理数组
 
-### $refs父改子组件
+#### $refs父改子组件
 
 ```html
 <!-- 子组件custom-temp -->
@@ -637,7 +639,7 @@ VueRouter.prototype.push = function (location) {
 
 
 
-### this.$route.query
+#### this.$route.query
 
 地址栏携带的参数在这里
 
@@ -683,7 +685,7 @@ router.beforeEach((to, from, next) => {
 
 
 
-### 局部导航守卫
+#### 局部导航守卫
 
 ```js
 // 组件内的局部导航守卫
