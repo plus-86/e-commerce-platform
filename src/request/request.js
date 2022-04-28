@@ -3,7 +3,7 @@ import axios from 'axios'
 import store from '@/store/index.js'
 
 const instance = axios.create({
-  baseURL: 'http://kumanxuan1.f3322.net:8881/cms/',
+  baseURL: '/api',
   timeout: 5000
 })
 
