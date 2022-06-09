@@ -137,7 +137,7 @@ controlAmount(val) {
 },
 ```
 
-输入商品数量
+**输入商品数量**
 
 ```js
 inputAmount() {
@@ -405,7 +405,7 @@ const instance = axios.create({
 
 有些只能在特定组件使用的方法需要加载和卸载
 
-```
+```js
 mounted() {
   // 进入组件加载监听事件
   window.addEventListener('scroll', this.scrollLoading) // addEventListener('监听事件', 执行函数)
@@ -437,7 +437,7 @@ initSelect() {
 
 ### 富文本渲染
 
-将富文本绑定到v-html
+将富文本绑定到**v-html**
 
 ```
 <div v-html="richText"></div>
