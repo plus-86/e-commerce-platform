@@ -11,7 +11,7 @@
           </li>
           <li @click="hdclick">我的积分：{{ userInfo.coin }}</li>
           <li @click="attention">获取积分</li>
-          <li @click="attention">叩丁狼官网</li>
+          <li @click="attention">官网</li>
           <li
             class="btn"
             @click="changeLoginModuleState(true)"
